@@ -43,10 +43,10 @@ app.use(
     origin: [
       "https://admin-panel.rajavrukshagroup.in",
       // "https://rrplserver.rajavrukshagroup.in",
-      // "http://localhost:5173",
+      // "http://localhost:5174",
     ],
     credentials: true,
-  })
+  }),
 );
 
 // Middleware

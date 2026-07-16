@@ -38,7 +38,7 @@ if (SMTP_HOST && SMTP_USER && SMTP_PASS) {
   transporter
     .verify()
     .catch((err) =>
-      console.warn("SMTP transporter verify failed:", err.message)
+      console.warn("SMTP transporter verify failed:", err.message),
     );
 } else {
   console.warn("SMTP not configured - OTPs will be logged to console.");
@@ -87,13 +87,13 @@ const adminSendOTP = async (req, res) => {
         console.error("Error sending OTP email:", mailErr);
         // don't fail the whole request — fallback to console logging
         console.log(
-          `OTP for ${contact}: ${otp} (expires ${expiresAt.toISOString()})`
+          `OTP for ${contact}: ${otp} (expires ${expiresAt.toISOString()})`,
         );
       }
     } else {
       // dev fallback
       console.log(
-        `ADMIN OTP for ${contact}: ${otp} (expires ${expiresAt.toISOString()})`
+        `ADMIN OTP for ${contact}: ${otp} (expires ${expiresAt.toISOString()})`,
       );
     }
 
@@ -385,7 +385,7 @@ const updateCompanyDetails = async (req, res) => {
     const updatedCompanyDetails = await AdminCompany.findByIdAndUpdate(
       id,
       updatedData,
-      { new: true }
+      { new: true },
     );
 
     if (!updatedCompanyDetails) {
@@ -501,7 +501,7 @@ const deleteCompanyDetails = async (req, res) => {
         readPreference: "primary",
         readConcern: { level: "local" },
         writeConcern: { w: "majority" },
-      }
+      },
     );
 
     session.endSession();
@@ -525,7 +525,7 @@ const deleteCompanyDetails = async (req, res) => {
     // If transactions are not supported (e.g., standalone mongod), fallback to sequential deletes
     const txnNotSupported =
       /transactions are not supported|Transaction numbers|InvalidOperation: transactions are not supported/i.test(
-        errMsg
+        errMsg,
       );
 
     if (txnNotSupported) {
@@ -784,7 +784,7 @@ const editDepartmentUnderEachCompany = async (req, res) => {
       .findOneAndUpdate(
         { _id: deptId },
         { $set: { department: newName } },
-        { new: true, runValidators: true }
+        { new: true, runValidators: true },
       )
       .lean();
 
@@ -889,7 +889,7 @@ const deleteDepartmentUnderEachCompany = async (req, res) => {
         readPreference: "primary",
         readConcern: { level: "local" },
         writeConcern: { w: "majority" },
-      }
+      },
     );
 
     session.endSession();
@@ -914,7 +914,7 @@ const deleteDepartmentUnderEachCompany = async (req, res) => {
     // fallback when transactions are not supported (standalone mongod)
     const txnNotSupported =
       /transactions are not supported|Transaction numbers|InvalidOperation: transactions are not supported/i.test(
-        errMsg
+        errMsg,
       );
 
     if (txnNotSupported) {
@@ -964,7 +964,7 @@ const deleteDepartmentUnderEachCompany = async (req, res) => {
       } catch (fallbackErr) {
         console.error(
           "Fallback deleteDepartmentUnderEachCompany error:",
-          fallbackErr
+          fallbackErr,
         );
         return res.status(500).json({
           success: false,
@@ -1240,7 +1240,7 @@ const createEmployeeRecord = async (req, res) => {
 
     // strip undefined fields
     Object.keys(newEmployeeData).forEach(
-      (k) => newEmployeeData[k] === undefined && delete newEmployeeData[k]
+      (k) => newEmployeeData[k] === undefined && delete newEmployeeData[k],
     );
 
     const employee = new Employee(newEmployeeData);
@@ -1285,7 +1285,7 @@ const viewDepartmentEmployeesUnderCompany = async (req, res) => {
     const page = Math.max(1, parseInt(req.query.page || "1", 10));
     const limit = Math.min(
       200,
-      Math.max(1, parseInt(req.query.limit || "15", 10))
+      Math.max(1, parseInt(req.query.limit || "15", 10)),
     );
     const reveal = String(req.query.reveal || "false").toLowerCase() === "true";
 
@@ -1410,10 +1410,10 @@ const viewDepartmentEmployeesUnderCompany = async (req, res) => {
           typeof e.statusWorking === "boolean"
             ? e.statusWorking
             : e.status === "Working"
-            ? true
-            : e.status === "Not Working"
-            ? false
-            : null,
+              ? true
+              : e.status === "Not Working"
+                ? false
+                : null,
 
         // dates (return raw ISO or null)
         dateOfBirth: e.dateOfBirth || null,
@@ -1479,8 +1479,8 @@ const viewDepartmentEmployeesUnderCompany = async (req, res) => {
           typeof e.isMarried === "boolean"
             ? e.isMarried
             : e.maritalStatus
-            ? String(e.maritalStatus) === "Married"
-            : null,
+              ? String(e.maritalStatus) === "Married"
+              : null,
 
         fatherName: e.fatherName ?? null,
         fatherDOB: e.fatherDOB || null,
@@ -2426,7 +2426,7 @@ const editDepartmentEmployeeUnderCompany = async (req, res) => {
 
     // remove undefined keys so mongoose doesn't set to undefined inadvertently
     Object.keys(updates).forEach(
-      (k) => updates[k] === undefined && delete updates[k]
+      (k) => updates[k] === undefined && delete updates[k],
     );
 
     if (Object.keys(updates).length === 0) {
@@ -2636,7 +2636,7 @@ const deleteDepartmentEmployeeUnderCompany = async (req, res) => {
         readPreference: "primary",
         readConcern: { level: "local" },
         writeConcern: { w: "majority" },
-      }
+      },
     );
 
     session.endSession();
@@ -2660,7 +2660,7 @@ const deleteDepartmentEmployeeUnderCompany = async (req, res) => {
     // fallback when transactions are not supported
     const txnNotSupported =
       /transactions are not supported|Transaction numbers|InvalidOperation: transactions are not supported/i.test(
-        errMsg
+        errMsg,
       );
 
     if (txnNotSupported) {
@@ -2948,20 +2948,20 @@ const createSalaryDetails = async (req, res) => {
     salaryData.hra_enc = encryptField(String(Number(hra || 0)));
     salaryData.trAllowance_enc = encryptField(String(Number(trAllowance || 0)));
     salaryData.specialAllowance_enc = encryptField(
-      String(Number(specialAllowance || 0))
+      String(Number(specialAllowance || 0)),
     );
     salaryData.vda_enc = encryptField(String(Number(vda || 0)));
     salaryData.foodAllowance_enc = encryptField(
-      String(Number(foodAllowance || 0))
+      String(Number(foodAllowance || 0)),
     );
     salaryData.uniformRefund_enc = encryptField(
-      String(Number(uniformRefund || 0))
+      String(Number(uniformRefund || 0)),
     );
 
     salaryData.epf_enc = encryptField(String(Number(epf || 0)));
     salaryData.esic_enc = encryptField(String(Number(esic || 0)));
     salaryData.professionalTax_enc = encryptField(
-      String(Number(professionalTax || 0))
+      String(Number(professionalTax || 0)),
     );
     // encrypt the new deduction components
     salaryData.uniform_deduction_enc = encryptField(String(uniformNum));
@@ -3649,7 +3649,7 @@ const editIndEmployeeSalaryDetails = async (req, res) => {
 
       // fallback to numeric stored value (may be 0)
       return Number(
-        doc[plainFieldName] !== undefined ? doc[plainFieldName] : 0
+        doc[plainFieldName] !== undefined ? doc[plainFieldName] : 0,
       );
     };
 
@@ -3657,29 +3657,29 @@ const editIndEmployeeSalaryDetails = async (req, res) => {
     const basicSalaryVal = readEncryptedNum(
       salaryDoc,
       "basicSalary_enc",
-      "basicSalary"
+      "basicSalary",
     );
     const hraVal = readEncryptedNum(salaryDoc, "hra_enc", "hra");
     const trAllowanceVal = readEncryptedNum(
       salaryDoc,
       "trAllowance_enc",
-      "trAllowance"
+      "trAllowance",
     );
     const specialAllowanceVal = readEncryptedNum(
       salaryDoc,
       "specialAllowance_enc",
-      "specialAllowance"
+      "specialAllowance",
     );
     const vdaVal = readEncryptedNum(salaryDoc, "vda_enc", "vda");
     const foodAllowanceVal = readEncryptedNum(
       salaryDoc,
       "foodAllowance_enc",
-      "foodAllowance"
+      "foodAllowance",
     );
     const uniformRefundVal = readEncryptedNum(
       salaryDoc,
       "uniformRefund_enc",
-      "uniformRefund"
+      "uniformRefund",
     );
 
     const gross =
@@ -3697,12 +3697,12 @@ const editIndEmployeeSalaryDetails = async (req, res) => {
     const professionalTaxVal = readEncryptedNum(
       salaryDoc,
       "professionalTax_enc",
-      "professionalTax"
+      "professionalTax",
     );
     const uniformVal = readEncryptedNum(
       salaryDoc,
       "uniform_deduction_enc",
-      "uniform_deduction"
+      "uniform_deduction",
     );
     const lateVal = readEncryptedNum(salaryDoc, "late_login_enc", "late_login");
     const othersVal = readEncryptedNum(salaryDoc, "others_enc", "others");
@@ -3716,7 +3716,7 @@ const editIndEmployeeSalaryDetails = async (req, res) => {
         const advFromEnc = readEncryptedNum(
           salaryDoc,
           "advance_enc",
-          "advance"
+          "advance",
         );
         computedAdvance = Number(advFromEnc || 0);
       } catch (e) {
@@ -3771,27 +3771,27 @@ const editIndEmployeeSalaryDetails = async (req, res) => {
       // encrypt only fields that were provided incoming OR we always update totals/tax/net
       if (Object.prototype.hasOwnProperty.call(incoming, "basicSalary"))
         upd.basicSalary_enc = encryptField(
-          String(Number(incoming.basicSalary || 0))
+          String(Number(incoming.basicSalary || 0)),
         );
       if (Object.prototype.hasOwnProperty.call(incoming, "hra"))
         upd.hra_enc = encryptField(String(Number(incoming.hra || 0)));
       if (Object.prototype.hasOwnProperty.call(incoming, "trAllowance"))
         upd.trAllowance_enc = encryptField(
-          String(Number(incoming.trAllowance || 0))
+          String(Number(incoming.trAllowance || 0)),
         );
       if (Object.prototype.hasOwnProperty.call(incoming, "specialAllowance"))
         upd.specialAllowance_enc = encryptField(
-          String(Number(incoming.specialAllowance || 0))
+          String(Number(incoming.specialAllowance || 0)),
         );
       if (Object.prototype.hasOwnProperty.call(incoming, "vda"))
         upd.vda_enc = encryptField(String(Number(incoming.vda || 0)));
       if (Object.prototype.hasOwnProperty.call(incoming, "foodAllowance"))
         upd.foodAllowance_enc = encryptField(
-          String(Number(incoming.foodAllowance || 0))
+          String(Number(incoming.foodAllowance || 0)),
         );
       if (Object.prototype.hasOwnProperty.call(incoming, "uniformRefund"))
         upd.uniformRefund_enc = encryptField(
-          String(Number(incoming.uniformRefund || 0))
+          String(Number(incoming.uniformRefund || 0)),
         );
 
       if (Object.prototype.hasOwnProperty.call(incoming, "epf"))
@@ -3800,15 +3800,15 @@ const editIndEmployeeSalaryDetails = async (req, res) => {
         upd.esic_enc = encryptField(String(Number(incoming.esic || 0)));
       if (Object.prototype.hasOwnProperty.call(incoming, "professionalTax"))
         upd.professionalTax_enc = encryptField(
-          String(Number(incoming.professionalTax || 0))
+          String(Number(incoming.professionalTax || 0)),
         );
       if (Object.prototype.hasOwnProperty.call(incoming, "uniform_deduction"))
         upd.uniform_deduction_enc = encryptField(
-          String(Number(incoming.uniform_deduction || 0))
+          String(Number(incoming.uniform_deduction || 0)),
         );
       if (Object.prototype.hasOwnProperty.call(incoming, "late_login"))
         upd.late_login_enc = encryptField(
-          String(Number(incoming.late_login || 0))
+          String(Number(incoming.late_login || 0)),
         );
       if (Object.prototype.hasOwnProperty.call(incoming, "others"))
         upd.others_enc = encryptField(String(Number(incoming.others || 0)));
@@ -3982,6 +3982,20 @@ const safeNum = (v) => {
   return isNaN(n) ? 0 : n;
 };
 
+const formatDateDDMMYYYY = (dateValue) => {
+  if (!dateValue) return "-";
+
+  const date = new Date(dateValue);
+
+  if (Number.isNaN(date.getTime())) return "-";
+
+  const day = String(date.getUTCDate()).padStart(2, "0");
+  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+  const year = date.getUTCFullYear();
+
+  return `${day}/${month}/${year}`;
+};
+
 const readSalarySlipTemplateById = async (req, res) => {
   try {
     const { companyId, deptId, employeeId, salaryId } = req.params;
@@ -4072,7 +4086,8 @@ const readSalarySlipTemplateById = async (req, res) => {
         empId: employee?.employeeId || "", // plain field
         name: employee?.employeeName || "",
         designation: employee?.designation || "",
-        doj: employee?.dateOfJoining ? new Date(employee.dateOfJoining) : null,
+        // doj: employee?.dateOfJoining ? new Date(employee.dateOfJoining) : null,
+        doj: formatDateDDMMYYYY(employee?.dateOfJoining),
         aadhar: readEmployeeText("aadhar", "aadhar"),
         UAN: readEmployeeText("UAN", "UAN"),
 
@@ -4101,27 +4116,27 @@ const readSalarySlipTemplateById = async (req, res) => {
         trAllowance: readNumericFromSalary("trAllowance", "trAllowance_enc"),
         specialAllowance: readNumericFromSalary(
           "specialAllowance",
-          "specialAllowance_enc"
+          "specialAllowance_enc",
         ),
         vda: readNumericFromSalary("vda", "vda_enc"),
         foodAllowance: readNumericFromSalary(
           "foodAllowance",
-          "foodAllowance_enc"
+          "foodAllowance_enc",
         ),
         uniformRefund: readNumericFromSalary(
           "uniformRefund",
-          "uniformRefund_enc"
+          "uniformRefund_enc",
         ),
         // deductions
         epf: readNumericFromSalary("epf", "epf_enc"),
         esic: readNumericFromSalary("esic", "esic_enc"),
         professionalTax: readNumericFromSalary(
           "professionalTax",
-          "professionalTax_enc"
+          "professionalTax_enc",
         ),
         uniform_deduction: readNumericFromSalary(
           "uniform_deduction",
-          "uniform_deduction_enc"
+          "uniform_deduction_enc",
         ),
         late_login: readNumericFromSalary("late_login", "late_login_enc"),
         others: readNumericFromSalary("others", "others_enc"),
@@ -4131,11 +4146,11 @@ const readSalarySlipTemplateById = async (req, res) => {
         // totals
         totalEarnings: readNumericFromSalary(
           "totalEarnings",
-          "totalEarnings_enc"
+          "totalEarnings_enc",
         ),
         totalDeductions: readNumericFromSalary(
           "totalDeductions",
-          "totalDeductions_enc"
+          "totalDeductions_enc",
         ),
         netPay: readNumericFromSalary("netPay", "netPay_enc"),
         notes: readTextFromSalary("notes", "notes_enc"),
@@ -4248,7 +4263,7 @@ const sendSalarySlipByEmail = async (req, res) => {
     // Validate IDs
     if (
       ![companyId, deptId, employeeId, salaryId].every((id) =>
-        mongoose.Types.ObjectId.isValid(id)
+        mongoose.Types.ObjectId.isValid(id),
       )
     ) {
       return res
@@ -4375,26 +4390,26 @@ const sendSalarySlipByEmail = async (req, res) => {
         trAllowance: readNumericFromSalary("trAllowance", "trAllowance_enc"),
         specialAllowance: readNumericFromSalary(
           "specialAllowance",
-          "specialAllowance_enc"
+          "specialAllowance_enc",
         ),
         foodAllowance: readNumericFromSalary(
           "foodAllowance",
-          "foodAllowance_enc"
+          "foodAllowance_enc",
         ),
         uniformRefund: readNumericFromSalary(
           "uniformRefund",
-          "uniformRefund_enc"
+          "uniformRefund_enc",
         ),
         vda: readNumericFromSalary("vda", "vda_enc"),
         epf: readNumericFromSalary("epf", "epf_enc"),
         esic: readNumericFromSalary("esic", "esic_enc"),
         professionalTax: readNumericFromSalary(
           "professionalTax",
-          "professionalTax_enc"
+          "professionalTax_enc",
         ),
         uniform_deduction: readNumericFromSalary(
           "uniform_deduction",
-          "uniform_deduction_enc"
+          "uniform_deduction_enc",
         ),
         late_login: readNumericFromSalary("late_login", "late_login_enc"),
         others: readNumericFromSalary("others", "others_enc"),
@@ -4402,11 +4417,11 @@ const sendSalarySlipByEmail = async (req, res) => {
         lop: readNumericFromSalary("lop", "lop_enc"),
         totalEarnings: readNumericFromSalary(
           "totalEarnings",
-          "totalEarnings_enc"
+          "totalEarnings_enc",
         ),
         totalDeductions: readNumericFromSalary(
           "totalDeductions",
-          "totalDeductions_enc"
+          "totalDeductions_enc",
         ),
         netPay: readNumericFromSalary("netPay", "netPay_enc"),
         notes: readTextFromSalary("notes", "notes_enc"),
@@ -4573,7 +4588,7 @@ const sendSalarySlipByEmail = async (req, res) => {
         mapped.employee.empId || mapped.employee.name || "employee"
       }-${monthDisplayName || ""}-${mapped.salary.payYear || ""}.pdf`.replace(
         /\s+/g,
-        "_"
+        "_",
       );
 
       // send the email
