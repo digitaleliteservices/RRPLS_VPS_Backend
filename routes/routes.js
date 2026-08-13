@@ -126,4 +126,7 @@ router.post(
   accountController.sendAllEmployeesSalarySlipsToAccountsTeam
 );
 
+//SYLVAN RETREAT enquiry form landing page
+router.post("/sylvan-retreat-enquiry", usersController.sylvanRetreatEnquiryForm);
+
 module.exports = router;

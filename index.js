@@ -42,8 +42,10 @@ app.use(
   cors({
     origin: [
       "https://admin-panel.rajavrukshagroup.in",
+      "https://thesamrudhi.com",
       // "https://rrplserver.rajavrukshagroup.in",
       // "http://localhost:5174",
+      //"http://localhost:3000",
     ],
     credentials: true,
   }),

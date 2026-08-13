@@ -158,4 +158,204 @@ const adminVerifyOTP = async (req, res) => {
 
 const verifyDeploy = async (req, res) => {};
 
-module.exports = { login, adminVerifyOTP, verifyDeploy };
+// SYLVAN RETREAT landing page enquiry form controller
+const sylvanRetreatEnquiryForm = async (req, res) => {
+  try {
+    const {
+      name,
+      email,
+      phone,
+      message,
+    } = req.body;
+
+    // Validate required fields
+    if (!name || !email || !phone) {
+      return res.status(400).json({
+        success: false,
+        message: "Name, email and phone are required",
+      });
+    }
+
+    // Create transporter
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.SYLVAN_RETREAT_MAIL,
+        pass: process.env.SYLVAN_RETREAT_PASS,
+      },
+    });
+
+    // Email details
+    const mailOptions = {
+      from: process.env.SYLVAN_RETREAT_MAIL,
+      to: process.env.SYLVAN_RETREAT_MAIL, // Send to the same email for now
+      replyTo: email,
+      subject: `New Sylvan Retreat Enquiry - ${name}`,
+
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="UTF-8" />
+          <title>Sylvan Retreat Enquiry</title>
+        </head>
+
+        <body style="
+          margin: 0;
+          padding: 30px;
+          background-color: #f4f6f8;
+          font-family: Arial, Helvetica, sans-serif;
+        ">
+
+          <div style="
+            max-width: 650px;
+            margin: auto;
+            background: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+          ">
+
+            <div style="
+              background: #123c2a;
+              padding: 25px;
+              color: #ffffff;
+            ">
+              <h1 style="
+                margin: 0;
+                font-size: 24px;
+              ">
+                Sylvan Retreat
+              </h1>
+
+              <p style="
+                margin: 8px 0 0;
+                color: #d9e8df;
+              ">
+                New Enquiry Received
+              </p>
+            </div>
+
+            <div style="padding: 30px;">
+
+              <h2 style="
+                margin-top: 0;
+                color: #123c2a;
+              ">
+                Enquiry Details
+              </h2>
+
+              <table style="
+                width: 100%;
+                border-collapse: collapse;
+              ">
+
+                <tr>
+                  <td style="
+                    padding: 12px;
+                    font-weight: bold;
+                    border-bottom: 1px solid #eeeeee;
+                  ">
+                    Name
+                  </td>
+
+                  <td style="
+                    padding: 12px;
+                    border-bottom: 1px solid #eeeeee;
+                  ">
+                    ${name}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="
+                    padding: 12px;
+                    font-weight: bold;
+                    border-bottom: 1px solid #eeeeee;
+                  ">
+                    Email
+                  </td>
+
+                  <td style="
+                    padding: 12px;
+                    border-bottom: 1px solid #eeeeee;
+                  ">
+                    ${email}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="
+                    padding: 12px;
+                    font-weight: bold;
+                    border-bottom: 1px solid #eeeeee;
+                  ">
+                    Phone
+                  </td>
+
+                  <td style="
+                    padding: 12px;
+                    border-bottom: 1px solid #eeeeee;
+                  ">
+                    ${phone}
+                  </td>
+                </tr>
+
+              </table>
+
+              <h3 style="
+                margin-top: 25px;
+                color: #123c2a;
+              ">
+                Message
+              </h3>
+
+              <div style="
+                padding: 15px;
+                background: #f7f9f8;
+                border-radius: 8px;
+                color: #444444;
+                line-height: 1.6;
+              ">
+                ${message || "No message provided"}
+              </div>
+
+            </div>
+
+            <div style="
+              padding: 20px;
+              text-align: center;
+              background: #f4f6f8;
+              color: #777777;
+              font-size: 13px;
+            ">
+              This enquiry was submitted through the
+              Sylvan Retreat website.
+            </div>
+
+          </div>
+
+        </body>
+        </html>
+      `,
+    };
+
+    // Send email
+    await transporter.sendMail(mailOptions);
+
+    return res.status(200).json({
+      success: true,
+      message: "Enquiry submitted successfully",
+    });
+
+  } catch (error) {
+    console.error("Sylvan Retreat enquiry error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to submit enquiry",
+    });
+  }
+};
+
+module.exports = { login, adminVerifyOTP, verifyDeploy , sylvanRetreatEnquiryForm};
