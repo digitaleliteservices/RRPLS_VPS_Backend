@@ -45,7 +45,8 @@ app.use(
       "https://thesamrudhi.com",
       // "https://rrplserver.rajavrukshagroup.in",
       // "http://localhost:5174",
-      //"http://localhost:3000",
+      // "http://localhost:3000",
+      // "http://localhost:3000/farm-land-doddaballapur/"
     ],
     credentials: true,
   }),

@@ -188,7 +188,10 @@ const sylvanRetreatEnquiryForm = async (req, res) => {
     // Email details
     const mailOptions = {
       from: process.env.SYLVAN_RETREAT_MAIL,
-      to: process.env.SYLVAN_RETREAT_MAIL, // Send to the same email for now
+      to: [
+          process.env.SYLVAN_RETREAT_MAIL,
+          process.env.SYLVAN_RETREAT_SECOND_MAIL,
+        ], // Send to the same email for now
       replyTo: email,
       subject: `New Sylvan Retreat Enquiry - ${name}`,
 
